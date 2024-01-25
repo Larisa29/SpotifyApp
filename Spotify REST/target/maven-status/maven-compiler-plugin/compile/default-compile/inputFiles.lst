@@ -1,0 +1,13 @@
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/Services/ArtistServiceImpl.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/Services/SongServiceImpl.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/Services/IArtistService.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/Controllers/SongController.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/DataAccess/Exceptions/ArtistNotFoundException.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/SpotifyAppApplication.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/DataAccess/Models/Artist.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/Controllers/ArtistController.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/Services/ISongService.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/DataAccess/Models/Song.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/DataAccess/Exceptions/SongNotFoundException.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/DataAccess/Repositories/IArtistRepository.java
+/home/larisa/Desktop/POS/spotify_version1.0/activitate-laborator-2022-2023-Larisa29-main/SpotifyREST/src/main/java/com/POS/SpotifyApp/DataAccess/Repositories/ISongRepository.java
