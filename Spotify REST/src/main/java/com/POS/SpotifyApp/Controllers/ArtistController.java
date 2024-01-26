@@ -177,4 +177,19 @@ public class ArtistController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/artists/{artistId}/song/{songId}")
+    ResponseEntity<?> deleteAssociation(@PathVariable String artistId, @PathVariable Integer songId)
+    {
+        try{
+            artistService.deleteAssociationBetweenSongsAndArtist(artistId, songId);
+            return ResponseEntity.noContent().build();
+
+        } catch (ArtistNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+        catch (SongNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

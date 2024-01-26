@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -105,33 +106,67 @@ public class ArtistServiceImpl implements IArtistService{
 
         return artistRepository.save(artist);
     }
+    @Transactional
     @Override
     public void deleteArtist(String id)
     {
         Artist artist = artistRepository.getArtistById(id);
-        if (artist != null && !artist.getAssignedSongs().isEmpty())
+        if (artist != null)
         {
-            Set<Song> assignedSongsCopy = new HashSet<>(artist.getAssignedSongs());
-            System.out.println("Cantecele asociate lui " + artist.getName()+ " sunt:");
-            for (Song song: assignedSongsCopy){
-                System.out.println("song: " + song.getName());
-            }
+            if (!artist.getAssignedSongs().isEmpty())
+            {
+                Set<Song> assignedSongsCopy = new HashSet<>(artist.getAssignedSongs());
+                System.out.println("Cantecele asociate lui " + artist.getName()+ " sunt:");
+                for (Song song: assignedSongsCopy)
+                {
+                    System.out.println("song: " + song.getName());
+                }
 
-            for (Song song: assignedSongsCopy){
-                song.getAssignedArtists().remove(artist);
-                //artist.removeSong(song);
+                for (Song song: assignedSongsCopy)
+                {
+//                    artist.getAssignedSongs().remove(song);
+//                    song.getAssignedArtists().remove(artist);
+                    artist.removeSong(song);
+                    // save modifications in DB
+                    artistRepository.save(artist);
+                    songRepository.save(song);
 
-            }
-            artist.getAssignedSongs().clear();
-            System.out.println("Dupa delete cantelecle ramase sunt: ");
-            Set<Song> after_delete = artist.getAssignedSongs();
-            for (Song song: after_delete){
+                }
 
-                System.out.println("song: " + song.getName());
+                System.out.println("Dupa delete cantecele ramase sunt: \n");
+                Set<Song> after_delete = artist.getAssignedSongs();
+                for (Song song: after_delete){
+
+                    System.out.println("song: " + song.getName());
+                }
             }
-            //artist.getAssignedSongs().clear();
         }
+
         artistRepository.deleteArtistById(id);
+    }
+    @Override
+    public void deleteAssociationBetweenSongsAndArtist(String artistId, Integer songId)
+    {
+        Artist artist = artistRepository.getArtistById(artistId);
+        Song song = songRepository.getSongById(songId);
+
+        if (artist == null)
+        {
+            throw new ArtistNotFoundException(artistId);
+        }
+        if (song == null)
+        {
+            throw new SongNotFoundException(songId);
+        }
+
+        if (artist != null && song != null) {
+            artist.getAssignedSongs().remove(song);
+            song.getAssignedArtists().remove(artist);
+
+            // Salvați modificările în baza de date
+            artistRepository.save(artist);
+            songRepository.save(song);
+        }
     }
 }
 

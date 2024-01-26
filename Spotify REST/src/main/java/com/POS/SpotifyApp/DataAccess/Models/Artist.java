@@ -23,7 +23,7 @@ public class Artist extends RepresentationModel<Artist> {
             inverseJoinColumns =  @JoinColumn(name = "song_id_fk", referencedColumnName = "id")
     )
 
-    private Set<Song> assignedSongs = new HashSet<>();
+    private Set<Song> assignedSongs = new HashSet<Song>();
     public Artist(){};
     public Artist(String id, String name, Boolean active)
     {

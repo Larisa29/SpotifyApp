@@ -17,4 +17,6 @@ public interface IArtistService {
     Artist addSongToArtist(String artistId, Integer songId);
     void deleteArtist(String id);
    // ResponseEntity<Object> updateArtistByAddingSongs(Artist artist, Integer songId);
+
+    void deleteAssociationBetweenSongsAndArtist(String artistId, Integer songId);
 }

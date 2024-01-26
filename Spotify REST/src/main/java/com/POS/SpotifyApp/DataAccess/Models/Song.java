@@ -50,13 +50,20 @@ public class Song extends RepresentationModel<Song> {
     private Integer parent;
     @JsonIgnore
     @ManyToMany(mappedBy = "assignedSongs")
-    Set<Artist> assignedArtists = new HashSet<>();
+    Set<Artist> assignedArtists = new HashSet<Artist>();
     public Collection<Artist> getAssignedArtists() {
         return assignedArtists;
     }
     public void removeArtist(Artist artist)
     {
+        //this.assignedArtists.remove(artist);
+
+        //remove artist
         this.assignedArtists.remove(artist);
+        //also update the song by removing current artist
+        artist.getAssignedSongs().remove(this);
+
+
     }
     public void setAssignedArtists(Set<Artist> artists) {
         this.assignedArtists = artists;
