@@ -47,15 +47,6 @@ public class Artist extends RepresentationModel<Artist> {
         this.assignedSongs.remove(song);
         //also update the song by removing current artist
         song.getAssignedArtists().remove(this);
-
-
-
-//        Set<Song> assignedSongsCopy = new HashSet<>(this.assignedSongs);
-//        for (Song s : assignedSongsCopy)
-//        {
-//            this.assignedSongs.remove(s);
-//            s.getAssignedArtists().remove(this);
-//        }
     }
     public void setAssignedSongs(HashSet<Song> assignedSongs) {
         this.assignedSongs = assignedSongs;

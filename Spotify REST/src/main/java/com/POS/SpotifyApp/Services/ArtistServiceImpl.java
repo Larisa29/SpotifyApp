@@ -115,33 +115,16 @@ public class ArtistServiceImpl implements IArtistService{
         {
             if (!artist.getAssignedSongs().isEmpty())
             {
-                Set<Song> assignedSongsCopy = new HashSet<>(artist.getAssignedSongs());
-                System.out.println("Cantecele asociate lui " + artist.getName()+ " sunt:");
-                for (Song song: assignedSongsCopy)
+                Set<Song> assignedSongs = new HashSet<>(artist.getAssignedSongs());
+                for (Song song: assignedSongs)
                 {
-                    System.out.println("song: " + song.getName());
-                }
-
-                for (Song song: assignedSongsCopy)
-                {
-//                    artist.getAssignedSongs().remove(song);
-//                    song.getAssignedArtists().remove(artist);
                     artist.removeSong(song);
                     // save modifications in DB
                     artistRepository.save(artist);
                     songRepository.save(song);
-
-                }
-
-                System.out.println("Dupa delete cantecele ramase sunt: \n");
-                Set<Song> after_delete = artist.getAssignedSongs();
-                for (Song song: after_delete){
-
-                    System.out.println("song: " + song.getName());
                 }
             }
         }
-
         artistRepository.deleteArtistById(id);
     }
     @Override
@@ -163,7 +146,6 @@ public class ArtistServiceImpl implements IArtistService{
             artist.getAssignedSongs().remove(song);
             song.getAssignedArtists().remove(artist);
 
-            // Salvați modificările în baza de date
             artistRepository.save(artist);
             songRepository.save(song);
         }

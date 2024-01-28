@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,7 @@ public class ArtistController {
 
     @GetMapping("/artists/{id}")
     public ResponseEntity<?> getArtist(@PathVariable String id)
-    {   /* TO DO: ADD HATEOAS*/
+    {
         try{
             Artist artist = artistService.getArtist(id);
             return ResponseEntity.ok(assembler.toModel(artist));
@@ -122,19 +123,26 @@ public class ArtistController {
     }
 
     @GetMapping("/artists/{id}/songs")
-    ResponseEntity<Collection<Song>> getArtistSongsById(@PathVariable String id)
+    ResponseEntity<?> getArtistSongsById(@PathVariable String id)
     {
-        /* TO DO: ADD HATEOAS*/
         Artist artist = artistService.getArtist(id);
         Collection<Song> artistSongs = artist.getAssignedSongs();
 
+        Link selfLink = linkTo(methodOn(ArtistController.class).getArtistSongsById(id)).withSelfRel();
+        Link parentLink = linkTo(methodOn(ArtistController.class).getArtist(id)).withRel("parent");
+
         if(!artistSongs.isEmpty())
         {
-            return ResponseEntity.ok(artistSongs);
+            List<EntityModel<Song>> songs = artistSongs.stream()
+                    .map(song -> songService.convertSongToEntityModel(song))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(CollectionModel.of(songs, selfLink, parentLink));
         }
         else
         {
-            return new ResponseEntity(artistSongs, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().header("Links", selfLink.toString() + ", " + parentLink.toString())
+                                 .build();
         }
     }
     @DeleteMapping("/artists/{id}")
@@ -146,30 +154,6 @@ public class ArtistController {
             {
                 throw new ArtistNotFoundException(id);
             }
-
-//            if (!artist.getAssignedSongs().isEmpty())
-//            {
-//            Set<Song> assignedSongsCopy = new HashSet<>(artist.getAssignedSongs());
-//            System.out.println("Cantecele asociate lui " + artist.getName()+ " sunt:");
-//            for (Song song: assignedSongsCopy){
-//                System.out.println("song: " + song.getName());
-//                }
-//
-//            for (Song song: assignedSongsCopy){
-//                song.getAssignedArtists().remove(artist);
-//                artist.removeSong(song);
-//
-//            }
-//            System.out.println("Dupa delete cantelecle ramase sunt: ");
-//            Set<Song> after_delete = artist.getAssignedSongs();
-//            for (Song song: after_delete){
-//
-//                System.out.println("song: " + song.getName());
-//            }
-//                //artist.getAssignedSongs().clear();
-//            }
-//
-//            artistService.deleteArtist(id);
             artistService.deleteArtist(id);
             return ResponseEntity.noContent().build();
 
