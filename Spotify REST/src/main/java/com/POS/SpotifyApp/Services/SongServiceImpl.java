@@ -16,11 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -62,37 +60,27 @@ public class SongServiceImpl implements ISongService{
         Song savedSong = songRepository.save(songRequest);
         return savedSong;
     }
-    @Override
-    public Song updateArtistByAddingSong(Integer song, String artistId) {
-        return new Song();
-    }
-//        Artist artist = artistRepository.getArtistById(artistId);
-//        if (artist != null)
-//        {
-//            //creez new song, in caz ca nu exista
-//            Song newSong = new Song();//constr.
-//            newSong.setName(song.getName());
-//            //newSong.setId(song.getId());
-//            newSong.setGenre(song.getGenre());
-//            newSong.setYear(song.getYear());
-//            newSong.setParent(song.getParent());
-//            Song saveSong= songRepository.save(newSong);//salvez cantecul creat
-//            // pus in tab de leg artist id si savedSog.getId
-//
-//
-//
-//            //newSong.getArtists().add(artist);
-//            //newSong.setArtists(song.getArtists());
-//            artist.getAssignedSongs().add(newSong);
-//
-//            return songRepository.save(newSong);
-//        }
-//        else throw new ArtistNotFoundException(artistId);
-//    }
 
     @Override
     public void deleteSongAlbum(int id)
     {
+        Song song = songRepository.getSongById(id);
+        if (song != null)
+        {
+            if (!song.getAssignedArtists().isEmpty())
+            {
+                Set<Artist> assignedArtists = new HashSet<>(song.getAssignedArtists());
+                for (Artist artist: assignedArtists)
+                {
+                    song.removeArtist(artist);
+                    songRepository.save(song);
+                    artistRepository.save(artist);
+                }
+            }
+        }
+        else{
+            throw new SongNotFoundException(id);
+        }
         songRepository.deleteSong(id);
     }
 }

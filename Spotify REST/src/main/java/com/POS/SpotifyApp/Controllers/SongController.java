@@ -26,7 +26,6 @@ public class SongController{
     @GetMapping("/songs")
     ResponseEntity<?> getAllSongs(@RequestParam(defaultValue = "1") Integer itemsPerPage,
                                   @RequestParam(defaultValue = "0") Integer page)
-    //CollectionModel<EntityModel<Song>> ca tip in loc de ResponseEntity<?> ????
     {
         try {
             List<Song> allSongs = songService.getAllSongs(page, itemsPerPage);
@@ -72,7 +71,6 @@ public class SongController{
     ResponseEntity<?> deleteSong(@PathVariable int id)
     {
         try{
-            Song song = songService.getSong(id);
             songService.deleteSongAlbum(id);
             return ResponseEntity.noContent().build();
 
