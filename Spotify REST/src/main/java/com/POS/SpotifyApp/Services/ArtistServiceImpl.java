@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ArtistServiceImpl implements IArtistService{
@@ -63,6 +64,38 @@ public class ArtistServiceImpl implements IArtistService{
         return Optional.ofNullable(pageResult.getContent())
                 .orElseThrow(() -> new ArtistDbIsEmptyException());
     }
+
+    @Override
+    public List<Artist> getAllArtistsFiltered(Optional<String> name, Optional<Boolean> active, Integer page, Integer itemsPerPage)
+    {
+        List<Artist> allArtists;
+        Pageable paging = PageRequest.of(page, itemsPerPage);
+        Page<Artist> pageArtist;
+
+        if (name.isPresent() && active.isPresent())
+        {
+            pageArtist = artistRepository.findByNameContainingAndActive(name.get(), active.get(), paging);
+        }
+        else if (name.isPresent())
+        {
+            pageArtist = artistRepository.findByName(name.get(), paging);
+        }
+        else if (active.isPresent())
+        {
+            pageArtist = artistRepository.findByActive(active.get(), paging);
+        }
+        else
+        {
+            pageArtist = artistRepository.findAll(paging);
+        }
+
+        allArtists = pageArtist.getContent();
+
+        if (allArtists.isEmpty())
+            throw new ArtistDbIsEmptyException();
+
+        return allArtists;
+    }
     @Override
     public Artist getArtist(String id)
     {
@@ -72,14 +105,15 @@ public class ArtistServiceImpl implements IArtistService{
     @Override
     public List<Artist> getArtistsByName(String name)
     {
-        List<Artist> artists = artistRepository.findByName(name);
+        /*List<Artist> artists = artistRepository.findByName(name);
 
         if (!artists.isEmpty()) {
             return artists;
         }
         else{
             return Collections.emptyList();
-        }
+        }*/
+        return Collections.emptyList();
     }
 
     @Override

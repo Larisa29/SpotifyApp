@@ -7,6 +7,8 @@ import com.POS.SpotifyApp.DataAccess.Models.Song;
 import com.POS.SpotifyApp.Services.IArtistService;
 import com.POS.SpotifyApp.Services.ISongService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -36,16 +38,17 @@ public class ArtistController {
 
     @GetMapping("/artists")
     public ResponseEntity<?> getAllArtists(@RequestParam(defaultValue = "0") Optional<Integer> page,
-                                           @RequestParam(defaultValue = "1") Optional<Integer> itemsPerPage)
+                                           @RequestParam(defaultValue = "1") Optional<Integer> itemsPerPage,
+                                           @RequestParam(required = false) Optional<String> name,
+                                           @RequestParam(required = false) Optional<Boolean> active)
     {
         try {
-            List<Artist> allArtists = artistService.getAllArtists(page, itemsPerPage);
-
+            List<Artist> allArtists = artistService.getAllArtistsFiltered(name, active, page.orElse(0), itemsPerPage.orElse(1));
             List<EntityModel<Artist>> artists = allArtists.stream()
                     .map(assembler::toModel)
                     .collect(Collectors.toList());
 
-            Link selfLink = linkTo(methodOn(ArtistController.class).getAllArtists(page, itemsPerPage)).withSelfRel();
+            Link selfLink = linkTo(methodOn(ArtistController.class).getAllArtists(page, itemsPerPage, Optional.empty(), Optional.empty())).withSelfRel();
             return ResponseEntity.ok(CollectionModel.of(artists, selfLink));
         }
         catch (ArtistDbIsEmptyException e) {

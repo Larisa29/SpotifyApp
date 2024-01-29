@@ -16,6 +16,6 @@ public class ArtistModelAssembler implements RepresentationModelAssembler<Artist
     {
         return EntityModel.of(artist,
                 linkTo(methodOn(ArtistController.class).getArtist(artist.getId())).withSelfRel(),
-                linkTo(methodOn(ArtistController.class).getAllArtists(Optional.empty(), Optional.empty())).withRel("artists"));
+                linkTo(methodOn(ArtistController.class).getAllArtists(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())).withRel("artists"));
     }
 }
