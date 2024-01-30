@@ -1,7 +1,5 @@
 package com.POS.SpotifyApp.Services;
 
-import com.POS.SpotifyApp.Controllers.SongController;
-import com.POS.SpotifyApp.DataAccess.Exceptions.ArtistDbIsEmptyException;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongDbIsEmptyException;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongNotFoundException;
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
@@ -21,17 +19,13 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import java.util.*;
-
-import javax.transaction.Transactional;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SongServiceImpl implements ISongService{
     @Autowired
-    ISongRepository songRepository; //injectez repository
+    ISongRepository songRepository; //inject repository
 
     @Autowired
     IArtistRepository artistRepository;
@@ -39,7 +33,7 @@ public class SongServiceImpl implements ISongService{
     public List<Song> getAllSongs(Integer page, Integer itemsPerPage)
     {
         Pageable paging = PageRequest.of(page, itemsPerPage);
-        Page<Song> pageResult = songRepository.findAll(paging); //findAllSongs??
+        Page<Song> pageResult = songRepository.findAll(paging);
 
         return Optional.ofNullable(pageResult.getContent())
                 .orElseThrow(() -> new SongDbIsEmptyException());
@@ -96,7 +90,6 @@ public class SongServiceImpl implements ISongService{
     @Override
     public Song createSong(Song songRequest)
     {
-        //commit and flush at. se face save si imi zice ca e save
         Song savedSong = songRepository.save(songRequest);
         return savedSong;
     }

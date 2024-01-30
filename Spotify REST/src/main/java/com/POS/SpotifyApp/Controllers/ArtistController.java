@@ -55,7 +55,6 @@ public class ArtistController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
     @GetMapping("/artists/{id}")
     public ResponseEntity<?> getArtist(@PathVariable String id)
     {
@@ -69,7 +68,6 @@ public class ArtistController {
     }
 
     @GetMapping("/artists/filter")
-    /* TO DO: ADD HATEOAS*/
     ResponseEntity<List<Artist>> getAllArtistsByName(@RequestParam String name)
     {
         List<Artist> artists = artistService.getArtistsByName(name);
@@ -124,7 +122,6 @@ public class ArtistController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
     @GetMapping("/artists/{id}/songs")
     ResponseEntity<?> getArtistSongsById(@PathVariable String id)
     {

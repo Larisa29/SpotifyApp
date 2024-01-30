@@ -88,14 +88,5 @@ public class SongController{
         }
     }
 
-
-
-//    @GetMapping("/songs/{year}/name")
-//    List<Song> getNameByYear (@PathVariable int year)
-//    {
-//        return repository.getNameByYear(year);
-//    }
-
     /* TO DO: CONTROLLER FOR UPDATE SONG*/
-    /* TO DO: FILTRE LA GET ALL SONGS SAU CEVA SI MAI PARTICULAR??*/
 }

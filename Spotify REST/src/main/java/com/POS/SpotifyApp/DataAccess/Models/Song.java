@@ -11,12 +11,9 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.*;
 
-@Data //genereaza chestiile asociate unui pojo in general: getters, setters, toString, equals
-@Entity //daca am clasa Song cu datele ei si vreau sa o pastrez in DB trb definita o entitate recunoscuta de JPA
-        //an entity represents a table stored in a database.
-        //tre sa aiba un PK si un constructor fara argumente
-@Table(name = "melodii") //daca nu puneam asta, numele era implicit numele entitatii(adica Song)
-                        //entitatea Song va fi mapata la tabela melodii
+@Data
+@Entity
+@Table(name = "melodii")
 
 public class Song extends RepresentationModel<Song> {
     public enum Genre{
@@ -36,9 +33,8 @@ public class Song extends RepresentationModel<Song> {
         song,
         single;
     }
-    //id-ul e primary key + autoincrement pt id
-    @Id  @GeneratedValue(strategy = GenerationType.IDENTITY) //.identity
-    private Integer id; //pun Integer si nu int pt ca integer e serializabil
+    @Id  @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String name;
 
     @Enumerated(EnumType.STRING)

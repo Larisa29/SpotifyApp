@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-//ar trb sa specific "the domain type" si tipul id-ului intre <>
 public interface ISongRepository extends JpaRepository<Song, Integer>, PagingAndSortingRepository<Song, Integer> {
-    //in interfata de aici scriu queries native JPA cu parametri ca sa preiau date din DB
     @Query(value="SELECT name FROM melodii WHERE year=?1", nativeQuery = true)
     List<Song>  getNameByYear(int year);
     @Query(value="SELECT * FROM melodii LIMIT ?1 OFFSET ?2", nativeQuery = true)

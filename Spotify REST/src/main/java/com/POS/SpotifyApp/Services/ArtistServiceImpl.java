@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
-
 @Service
 public class ArtistServiceImpl implements IArtistService{
 
@@ -185,6 +183,3 @@ public class ArtistServiceImpl implements IArtistService{
         }
     }
 }
-
-//delete a song associated to an artist
-
