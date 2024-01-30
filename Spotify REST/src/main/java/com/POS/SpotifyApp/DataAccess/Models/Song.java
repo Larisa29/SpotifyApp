@@ -19,7 +19,7 @@ import java.util.*;
                         //entitatea Song va fi mapata la tabela melodii
 
 public class Song extends RepresentationModel<Song> {
-    enum Genre{
+    public enum Genre{
         folk,
         rock,
         country,
@@ -31,7 +31,7 @@ public class Song extends RepresentationModel<Song> {
         electronic;
     }
 
-    enum Types{
+    public enum Types{
         album,
         song,
         single;

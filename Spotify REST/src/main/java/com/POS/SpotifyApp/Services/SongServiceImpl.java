@@ -1,16 +1,22 @@
 package com.POS.SpotifyApp.Services;
 
 import com.POS.SpotifyApp.Controllers.SongController;
+import com.POS.SpotifyApp.DataAccess.Exceptions.ArtistDbIsEmptyException;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongDbIsEmptyException;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongNotFoundException;
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
+import com.POS.SpotifyApp.DataAccess.Models.Song.Genre;
+import com.POS.SpotifyApp.DataAccess.Models.Song.Types;
+
+import com.POS.SpotifyApp.DataAccess.Models.SongSpecifications;
 import com.POS.SpotifyApp.DataAccess.Repositories.IArtistRepository;
 import com.POS.SpotifyApp.DataAccess.Repositories.ISongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 import org.springframework.hateoas.Link;
@@ -36,7 +42,41 @@ public class SongServiceImpl implements ISongService{
         Page<Song> pageResult = songRepository.findAll(paging); //findAllSongs??
 
         return Optional.ofNullable(pageResult.getContent())
-                .orElseThrow(() -> new SongDbIsEmptyException()); //daca nu folosesc Optional.ofNullable nu pot folosi orElseThrow(), care tot din clasa Optional
+                .orElseThrow(() -> new SongDbIsEmptyException());
+    }
+
+    @Override
+    public List<Song> getAllSongsFiltered(Optional<String> name, Optional<Integer> year, Optional<Genre> genre, Optional<Types> type, Integer page, Integer itemsPerPage)
+    {
+        Pageable paging = PageRequest.of(page, itemsPerPage);
+        Specification<Song> specification = Specification.where(null);
+        if (name.isPresent())
+        {
+            specification = specification.and(SongSpecifications.hasName(name.get()));
+        }
+
+        if (year.isPresent())
+        {
+            specification = specification.and(SongSpecifications.hasYear(year.get()));
+        }
+
+        if (genre.isPresent())
+        {
+            specification = specification.and(SongSpecifications.hasGenre(genre.get()));
+        }
+
+        if (type.isPresent())
+        {
+            specification = specification.and(SongSpecifications.hasType(type.get()));
+        }
+
+        Page<Song> pageSong = songRepository.findAll(specification, paging);
+        List<Song> allSongs = pageSong.getContent();
+
+        if (allSongs.isEmpty())
+            throw new SongDbIsEmptyException();
+
+        return allSongs;
     }
     @Override
     public Song getSong(Integer id) {

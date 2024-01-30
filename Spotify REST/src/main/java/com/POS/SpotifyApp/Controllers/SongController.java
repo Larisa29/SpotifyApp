@@ -3,6 +3,8 @@ package com.POS.SpotifyApp.Controllers;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongDbIsEmptyException;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongNotFoundException;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
+import com.POS.SpotifyApp.DataAccess.Models.Song.Types;
+import com.POS.SpotifyApp.DataAccess.Models.Song.Genre;
 import com.POS.SpotifyApp.Services.ISongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.net.URI;
 @RestController //datele vor fi  scrise in response body
@@ -25,16 +30,20 @@ public class SongController{
     ISongService songService;
     @GetMapping("/songs")
     ResponseEntity<?> getAllSongs(@RequestParam(defaultValue = "1") Integer itemsPerPage,
-                                  @RequestParam(defaultValue = "0") Integer page)
+                                  @RequestParam(defaultValue = "0") Integer page,
+                                  @RequestParam(required = false) Optional<String> name,
+                                  @RequestParam(required = false) Optional<Integer> year,
+                                  @RequestParam(required = false) Optional<Genre> genre,
+                                  @RequestParam(required = false) Optional<Types> type)
     {
         try {
-            List<Song> allSongs = songService.getAllSongs(page, itemsPerPage);
+            List<Song> allSongs = songService.getAllSongsFiltered(name, year, genre, type, page, itemsPerPage);
 
             List<EntityModel<Song>> songs = allSongs.stream()
                     .map(song -> songService.convertSongToEntityModel(song))
                     .collect(Collectors.toList());
 
-            Link selfLink = linkTo(methodOn(SongController.class).getAllSongs(itemsPerPage, page)).withSelfRel();
+            Link selfLink = linkTo(methodOn(SongController.class).getAllSongs(itemsPerPage, page, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())).withSelfRel();
             return ResponseEntity.ok(CollectionModel.of(songs, selfLink));
         } catch (SongDbIsEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
