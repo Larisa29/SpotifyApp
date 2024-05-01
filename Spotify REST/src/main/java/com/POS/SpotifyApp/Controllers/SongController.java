@@ -29,8 +29,8 @@ public class SongController{
     @Autowired
     ISongService songService;
     @GetMapping("/songs")
-    ResponseEntity<?> getAllSongs(@RequestParam(defaultValue = "1") Integer itemsPerPage,
-                                  @RequestParam(defaultValue = "0") Integer page,
+    ResponseEntity<?> getAllSongs(@RequestParam(required = false) Optional<Integer> itemsPerPage,
+                                  @RequestParam(required = false) Optional<Integer> page,
                                   @RequestParam(required = false) Optional<String> name,
                                   @RequestParam(required = false) Optional<Integer> year,
                                   @RequestParam(required = false) Optional<Genre> genre,
@@ -43,7 +43,7 @@ public class SongController{
                     .map(song -> songService.convertSongToEntityModel(song))
                     .collect(Collectors.toList());
 
-            Link selfLink = linkTo(methodOn(SongController.class).getAllSongs(itemsPerPage, page, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())).withSelfRel();
+            Link selfLink = linkTo(methodOn(SongController.class).getAllSongs(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())).withSelfRel();
             return ResponseEntity.ok(CollectionModel.of(songs, selfLink));
         } catch (SongDbIsEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

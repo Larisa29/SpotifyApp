@@ -22,4 +22,5 @@ public interface ISongRepository extends JpaRepository<Song, Integer>, PagingAnd
     @Query(value = "DELETE FROM melodii WHERE id=?1",nativeQuery = true)
     void deleteSong(int id);
     Page<Song> findAll(Specification<Song> specification, Pageable pageable);
+    List<Song> findAll(Specification<Song> specification);
 }

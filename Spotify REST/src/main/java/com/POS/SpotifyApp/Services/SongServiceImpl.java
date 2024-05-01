@@ -38,12 +38,15 @@ public class SongServiceImpl implements ISongService{
         return Optional.ofNullable(pageResult.getContent())
                 .orElseThrow(() -> new SongDbIsEmptyException());
     }
-
     @Override
-    public List<Song> getAllSongsFiltered(Optional<String> name, Optional<Integer> year, Optional<Genre> genre, Optional<Types> type, Integer page, Integer itemsPerPage)
+    public List<Song> getAllSongsFiltered(Optional<String> name, Optional<Integer> year, Optional<Song.Genre> genre, Optional<Song.Types> type, Optional<Integer> page, Optional<Integer> itemsPerPage)
     {
-        Pageable paging = PageRequest.of(page, itemsPerPage);
         Specification<Song> specification = Specification.where(null);
+        Pageable paging = null;
+        if (page.isPresent() && itemsPerPage.isPresent())
+        {
+            paging = PageRequest.of(page.get(), itemsPerPage.get());
+        }
         if (name.isPresent())
         {
             specification = specification.and(SongSpecifications.hasName(name.get()));
@@ -64,14 +67,23 @@ public class SongServiceImpl implements ISongService{
             specification = specification.and(SongSpecifications.hasType(type.get()));
         }
 
-        Page<Song> pageSong = songRepository.findAll(specification, paging);
-        List<Song> allSongs = pageSong.getContent();
+        List<Song> allSongs;
+        if (paging!= null)
+        {
+            Page<Song> pageSong = songRepository.findAll(specification, paging);
+            allSongs = pageSong.getContent();
+        }
+        else
+        {
+            allSongs = songRepository.findAll(specification);
+        }
 
         if (allSongs.isEmpty())
             throw new SongDbIsEmptyException();
 
         return allSongs;
     }
+
     @Override
     public Song getSong(Integer id) {
         return Optional.ofNullable(songRepository.getSongById(id))
