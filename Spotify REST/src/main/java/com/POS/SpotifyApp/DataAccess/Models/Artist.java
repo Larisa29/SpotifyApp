@@ -13,6 +13,7 @@ import java.util.*;
 public class Artist extends RepresentationModel<Artist> {
     @Id
     private String id;
+
     private String name;
     private Boolean active;
     @JsonIgnore
