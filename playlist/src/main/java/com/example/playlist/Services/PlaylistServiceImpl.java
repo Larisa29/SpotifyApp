@@ -6,13 +6,10 @@ import com.example.playlist.DataAccess.Models.SongDetails;
 import com.example.playlist.DataAccess.Repositories.PlaylistRepository;
 import com.example.playlist.Exceptions.SongNotFoundException;
 import com.example.playlist.View.PlaylistDTO;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spotify.idmclient.wsdl.GetUserByIdResponse;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpMethod;
@@ -22,8 +19,6 @@ import com.example.playlist.Exceptions.IncorrectRequestBodyExeption;
 import com.example.playlist.Enums.Visibility;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +54,9 @@ public class PlaylistServiceImpl implements IPlaylistService{
             throw new SongNotFoundException(id);
         }
     }
-    public void getUserFromSoapById(Integer id)
+    public void getUserFromSoapById(Integer userId)
     {
-        GetUserByIdResponse response = idmClient.getUser(id);
-        System.out.println(response.getGetUserByIdResult());
-        //return null;
+        GetUserByIdResponse response = idmClient.getUserById(userId);
     }
 
     public Playlist createPlaylist(PlaylistDTO playlistDTO)//playlist dto has a list of ids (music)

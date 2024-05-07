@@ -14,7 +14,6 @@ public class PlaylistDTO {
     @Id
     private String id;
     private Integer userId;
-    private String userName;
     private String playlistName;
     private String visibility;
     private List<SongDetails> songs = new ArrayList<>();
