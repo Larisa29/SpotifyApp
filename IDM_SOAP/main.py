@@ -1,6 +1,9 @@
 from spyne import ServiceBase, rpc, Application, String, Iterable,Integer
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
+
+from models.dto.roleDTO import RoleDTO
+from models.dto.user_dto import UserDTO
 from repositories import user_repository, role_repository, users_roles_repository
 from json import dumps
 
@@ -18,13 +21,17 @@ class IDM_SOAP_Service(ServiceBase):
         for user in users:
             yield user.username
 
-    @rpc(Integer, _returns = String)
+    @rpc(Integer, _returns = UserDTO)
     def get_user_by_id(ctx, id):
         user = user_repository.get_user_by_id(id)
         if user is None:
             return "Specified user does not exist!"
-        roles = ', '.join(role.value for role in user.roles)
-        return f"id={user.id}, username={user.username}, password={user.password}, roles = {roles}"
+
+        #create a list of roles, each role having RoleDTO type
+        roles = [RoleDTO(role.id, role.value) for role in user.roles]
+
+        user_info = UserDTO(user.id, user.username, roles)
+        return user_info
 
     @rpc(String, _returns = String)
     def get_user_by_username(ctx, username):
