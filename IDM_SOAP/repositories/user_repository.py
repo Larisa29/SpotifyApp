@@ -1,3 +1,7 @@
+import spyne
+
+from models.dto.roleDTO import RoleDTO
+from models.dto.user_dto import UserDTO
 from models.user_orm import User
 from base.sql_base import Session
 
@@ -15,22 +19,28 @@ def get_user_by_username(username):
     session = Session()
     try:
         result = session.query(User).filter(User.username == username).first()
+        return result
     except Exception as exc:
         print(f"Failed to GET user - {exc}")
-    return result
 
-def create_user(username, password):
-    session = Session()
+def create_user(username, password, role):
+    session = Session().object_session(role)
     check_user = session.query(User).filter_by(username=username, password=password).first()
     if check_user:
-        return f"User with username={username} and password={password} already exists!"
+        raise spyne.model.fault.Fault(faultcode='Client', faultstring=f"User with username={username} and password={password} already exists!")
+
     user = User(username, password)
+    user.roles.append(role)
     try:
         session.add(user)
         session.commit()
+        roles_dto = [RoleDTO(role.id, role.value) for role in user.roles]
+        user_dto = UserDTO(user.id, user.username, roles_dto)
+        return user_dto
     except Exception as exc:
+        session.rollback()
         print(f"Failed to add user - {exc}")
-    return f"id:{user.id}, username:{user.username}, password:{user.password}"
+        raise spyne.Fault(faultcode='Server', faultstring="Could not save this user")
 
 def delete_user_by_username(username):
     session = Session()
@@ -38,50 +48,29 @@ def delete_user_by_username(username):
         session.query(User).filter(User.username == username).delete(synchronize_session= False)
         session.commit()
     except Exception as exc:
+        session.rollback()
         print(f"Failed to DELETE user - {exc}")
     return f"User {username } deletd!"
 
 def update_username_for_user(id, updated_name):
     session = Session()
-    if (get_user_by_id(id) == None):
-        return f"User doesn't exist!"
-    session.query(User).filter(User.id == id).update({User.username: updated_name})
-    session.commit()
-    updated_user = get_user_by_id(id)
-    return f"User updated: id:{updated_user.id}, username:{updated_user.username}"
-
-def update_password_for_user(id, updated_password):
-    session = Session()
-    if (get_user_by_id(id) == None):
-        return f"User doesn't exist!"
-    session.query(User).filter(User.id == id).update({User.password: updated_password})
-    session.commit()
-    updated_user = get_user_by_id(id)
-    return f"The user's password has been successfully updated! \n\t\t\t id:{updated_user.id}, password:{updated_user.password}"
-
-def get_user_info(user_id):
-    session = Session()
     try:
-        user = session.query(User).get(user_id)
-        if user == None:
-            return "User doesn't exist!!"
-        s = "Id:" + str(user.id) + "\n\t\t\t\t\t\t Username:" + user.username + "\n\t\t\t\t\t\t Password:" + user.password + "\n\t\t\t\t\t\t Roles:["
-        for r in user.roles:
-           s += r.value + ","
-        s += "] \n\t\t\t\t"
-        return s
+        session.query(User).filter(User.id == id).update({User.username: updated_name})
+        session.commit()
     except Exception as exc:
-        print(f"Failed to get all info for the user - {exc}")
-    return "Unsuccesfully operation!!!"
+        session.rollback()
+        return f"Failed to update user username - {exc}"
 
-def get_all_users_info():
-    session = Session()
-    users = session.query(User).all()
-    results = []
-    for u in users:
-        s = "Id:"+ str(u.id) +"\n\t\t\t\t\t\t Username:" + u.username + "\n\t\t\t\t\t\t Password:" + u.password + "\n\t\t\t\t\t\t Roles:["
-        for r in u.roles:
-            s += r.value + ","
-        s += "] \n\t\t\t\t"
-        results.append(s)
-    return results
+    return True
+
+def update_password_for_user(user, updated_password):
+    session = Session().object_session(user)
+    user.password = updated_password
+    try:
+        session.add(user)
+        session.commit()
+    except Exception as exc:
+        session.rollback()
+        print(f"Failed to update user password - {exc}")
+
+    return True

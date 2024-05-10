@@ -1,34 +1,32 @@
-from models.role_orm import Role
+import spyne
+
 from models.user_orm import User
 from base.sql_base import Session
 
-def add_role_for_user(user_id, role_id):
-    session = Session()
+def add_role_for_user(user, role, session):
+    if session is None:
+        raise spyne.model.fault.Fault(faultcode='Client', faultstring='Session object is required.')
+
+    user.roles.append(role)
     try:
-        role = session.query(Role).get(role_id)
-        if role == None:
-            return "Role doesn't exist!!"
-        user = session.query(User).get(user_id)
-        if user == None:
-            return "User doesn't exist!!"
-        session.query(user.roles.append(role))
+        session.add(user)
         session.commit()
-        return f"USER: {user.username}, ROLE added:{role.value}"
     except Exception as exc:
         print(f"Failed to add role to the user - {exc}")
-    return "Unsuccesfully operation!!!"
+
+    return True
 
 def get_user_roles(user_id):
     session = Session()
-    try:
-        roles = []
-        user = session.query(User).get(user_id)
-        if user == None:
-            return "User doesn't exist!!"
-        for r in user.roles:
-            roles.append(r.value)
-        return roles
-    except Exception as exc:
-        print(f"Failed to get all the roles for the user - {exc}")
-    return "Unsuccesfully operation!!!"
+    user = session.query(User).get(user_id)
+    if user is None:
+        raise spyne.model.fault.Fault(faultcode='Client', faultstring='User does not exist')
 
+    roles = []
+    for r in user.roles:
+        roles.append(r.value)
+
+    if len(roles) == 0:
+        raise spyne.model.fault.Fault(faultcode='Client', faultstring='Current user has no associated roles')
+
+    return roles
