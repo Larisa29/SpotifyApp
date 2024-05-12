@@ -2,9 +2,6 @@ package com.POS.SpotifyApp.Services;
 
 import com.POS.SpotifyApp.DataAccess.Models.Song;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.POS.SpotifyApp.DataAccess.Models.Artist;
 import java.util.Optional;
 
 import java.util.List;

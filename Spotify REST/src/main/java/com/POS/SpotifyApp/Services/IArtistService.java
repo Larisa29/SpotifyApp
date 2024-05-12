@@ -1,9 +1,5 @@
 package com.POS.SpotifyApp.Services;
-
-
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 import java.util.Optional;
 

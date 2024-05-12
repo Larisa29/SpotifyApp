@@ -1,10 +1,6 @@
 package com.POS.SpotifyApp.DataAccess.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-/*
-import com.mongodb.lang.Nullable;
-*/
 import javax.persistence.*;
 import lombok.Data;
 import org.springframework.hateoas.RepresentationModel;

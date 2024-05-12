@@ -4,9 +4,6 @@ import com.POS.SpotifyApp.DataAccess.Exceptions.SongDbIsEmptyException;
 import com.POS.SpotifyApp.DataAccess.Exceptions.SongNotFoundException;
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
-import com.POS.SpotifyApp.DataAccess.Models.Song.Genre;
-import com.POS.SpotifyApp.DataAccess.Models.Song.Types;
-
 import com.POS.SpotifyApp.DataAccess.Models.SongSpecifications;
 import com.POS.SpotifyApp.DataAccess.Repositories.IArtistRepository;
 import com.POS.SpotifyApp.DataAccess.Repositories.ISongRepository;
