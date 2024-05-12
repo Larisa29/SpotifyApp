@@ -44,8 +44,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
@@ -54,7 +52,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<version>1.18.24</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -66,23 +64,20 @@
 <!--			<artifactId>spring-oxm</artifactId>-->
 <!--			<version>5.3.14</version>-->
 <!--		</dependency>-->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.6.0.Beta1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>1.6.0.Beta1</version> <!-- check for the latest version -->
+			<scope>provided</scope>
+		</dependency>
 
 	</dependencies>
-<!--	<profiles>-->
-<!--		<profile>-->
-<!--			<id>java11</id>-->
-<!--			<activation>-->
-<!--				<jdk>[11,)</jdk>-->
-<!--			</activation>-->
-
-<!--			<dependencies>-->
-<!--				<dependency>-->
-<!--					<groupId>org.glassfish.jaxb</groupId>-->
-<!--					<artifactId>jaxb-runtime</artifactId>-->
-<!--				</dependency>-->
-<!--			</dependencies>-->
-<!--		</profile>-->
-<!--	</profiles>-->
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -95,14 +90,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!--				<configuration>-->
-				<!--					<excludes>-->
-				<!--						<exclude>-->
-				<!--							<groupId>org.projectlombok</groupId>-->
-				<!--							<artifactId>lombok</artifactId>-->
-				<!--						</exclude>-->
-				<!--					</excludes>-->
-				<!--				</configuration>-->
 
 			</plugin>
 
@@ -136,6 +123,27 @@
 <!--					<target>9</target>-->
 <!--				</configuration>-->
 <!--			</plugin>-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.24</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>1.6.0.Beta1</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
