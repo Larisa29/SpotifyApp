@@ -1,6 +1,6 @@
 package com.example.playlist.View;
 
-import com.example.playlist.DataAccess.Models.SongDetails;
+import com.example.playlist.View.SongDTO;
 import com.example.playlist.Enums.Visibility;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -16,10 +16,10 @@ public class PlaylistDTO {
     private Integer userId;
     private String playlistName;
     private String visibility;
-    private List<SongDetails> songs = new ArrayList<>();
+    private List<SongDTO> songs = new ArrayList<>();
 
     public PlaylistDTO() {}
-    public PlaylistDTO(Integer userId, String playlistName, List<SongDetails> songs)
+    public PlaylistDTO(Integer userId, String playlistName, List<SongDTO> songs)
     {
         this.userId = userId;
         this.playlistName = playlistName;

@@ -1,6 +1,7 @@
 package com.example.playlist.DataAccess.Models;
 
 import com.example.playlist.Enums.Visibility;
+import com.example.playlist.View.SongDTO;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,10 +17,10 @@ public class Playlist {
         private Integer userId;
         private String playlistName;
         private Visibility visibility;
-        private List<SongDetails> songs = new ArrayList<>();
+        private List<SongDTO> songs = new ArrayList<>();
         //to do: add another list for artists
 
-        public void AddSongToPlaylist(SongDetails song)
+        public void AddSongToPlaylist(SongDTO song)
         {
             if(this.songs == null)
             {
