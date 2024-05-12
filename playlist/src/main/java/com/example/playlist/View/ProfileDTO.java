@@ -1,31 +1,28 @@
 package com.example.playlist.View;
 
 import com.example.playlist.DataAccess.Models.Playlist;
-import com.example.playlist.DataAccess.Models.SongDetails;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class ProfileDTO {
-    @Id
-    private String id;
     private Integer userId;
     private String userName;
-    private List<SongDetails> likedMusic = new ArrayList<>();
+    private String email;
+    private List<SongDTO> likedMusic = new ArrayList<>();
     private Set<Playlist> playlists = new HashSet<>();
 
-    public ProfileDTO(Integer userId, String username)
+    public ProfileDTO(Integer userId, String username, String useremail)
     {
         this.userId = userId;
         this.userName = username;
+        this.email = useremail;
     }
 
-    public ProfileDTO(){};
+    //public ProfileDTO(){};
     public void addPlaylist(Playlist playlist)
     {
         playlists.add(playlist);

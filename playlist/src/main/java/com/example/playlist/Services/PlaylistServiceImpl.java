@@ -2,14 +2,18 @@ package com.example.playlist.Services;
 
 import com.example.playlist.Clients.IDMClient;
 import com.example.playlist.DataAccess.Models.Playlist;
-import com.example.playlist.DataAccess.Models.SongDetails;
+import com.example.playlist.DataAccess.Models.Profile;
 import com.example.playlist.DataAccess.Repositories.PlaylistRepository;
+import com.example.playlist.DataAccess.Repositories.ProfileRepository;
+import com.example.playlist.Exceptions.PlaylistNameAlreadyExistsException;
+import com.example.playlist.Exceptions.ProfileNotFoundException;
 import com.example.playlist.Exceptions.SongNotFoundException;
 import com.example.playlist.View.PlaylistDTO;
+import com.example.playlist.View.SongDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spotify.idmclient.wsdl.GetUserByIdResponse;
+import com.spotify.idmclient.wsdl.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpMethod;
@@ -32,6 +36,8 @@ public class PlaylistServiceImpl implements IPlaylistService{
     private RestTemplate restTemplate;
     @Autowired
     IDMClient idmClient;
+    @Autowired
+    ProfileRepository profileRepository;
 
     public List<Playlist> getPlaylists()
     {
@@ -54,18 +60,36 @@ public class PlaylistServiceImpl implements IPlaylistService{
             throw new SongNotFoundException(id);
         }
     }
-    public void getUserFromSoapById(Integer userId)
+    public UserDTO getUserFromSoapById(Integer userId)
     {
-        GetUserByIdResponse response = idmClient.getUserById(userId);
+        UserDTO response = idmClient.getUserById(userId);
+        //System.out.println(response.);
+        //String name = response.ge
+        return response;
     }
 
     public Playlist createPlaylist(PlaylistDTO playlistDTO)//playlist dto has a list of ids (music)
     {
         //verific daca mai am vreun playlist cu numele din playlistDTO, pt acelasi user; ca daca 2 useri au acelasi nume la playlists nu e nimic
-        getUserFromSoapById(playlistDTO.getUserId());
+        //getUserFromSoapById(playlistDTO.getUserId());  //---- CONSUME SOAP
 
+        //check if user exists
+        Profile profile = profileRepository.findProfileByUserId(playlistDTO.getUserId());
+        if (profile == null)
+        {
+            throw new ProfileNotFoundException(profile.getUserId());
+        }
+        //extract playlists for the current user
+        List<Playlist> currentUserPlaylists = playlistRepository.findPlaylistByUserId(playlistDTO.getUserId());
+        for(Playlist playlist: currentUserPlaylists)
+        {
+            if (playlist.getPlaylistName().equals(playlistDTO.getPlaylistName()))
+            {
+                throw new PlaylistNameAlreadyExistsException(playlistDTO.getPlaylistName());
+            }
+        }
 
-        //daca nu exista, creez playlist cu datele din PlaylistDTO
+        //if there isn't already a playlist with the name from the request associated with the user, then create playlist
         Playlist playlist = new Playlist(playlistDTO.getUserId(), playlistDTO.getPlaylistName());
         if (playlistDTO.getVisibility() != null)
         {
@@ -79,11 +103,12 @@ public class PlaylistServiceImpl implements IPlaylistService{
         {
             throw new IncorrectRequestBodyExeption("Visibility field is incorrect - it should be PPublic/PPrivate/Friends");
         }
-        //apoi preiau melodiile din SQL folosindu-ma de id-urile din DTO
-        List<SongDetails> songs = new ArrayList<>();
-        //persist schimbarile in NOSql
-        List<SongDetails> musicPlaylist = new ArrayList<>();
-        for (SongDetails songPlaylistDTO: playlistDTO.getSongs())
+
+        //get songs from SQL using dto
+        List<SongDTO> songs = new ArrayList<>();
+
+        List<SongDTO> musicPlaylist = new ArrayList<>();
+        for (SongDTO songPlaylistDTO: playlistDTO.getSongs())
         {
             //get song with specific id using RestTemplate
             String songResponse = getSongFromApiById(songPlaylistDTO.getId());
@@ -93,7 +118,7 @@ public class PlaylistServiceImpl implements IPlaylistService{
                 String name = songJson.get("name").asText();
                 String selflink = songJson.get("_links").get("self").get("href").asText();
 
-                SongDetails song = new SongDetails(songPlaylistDTO.getId(), name, selflink);
+                SongDTO song = new SongDTO(songPlaylistDTO.getId(), name, selflink);
 
                 musicPlaylist.add(song);
             }
@@ -103,7 +128,7 @@ public class PlaylistServiceImpl implements IPlaylistService{
             }
 
             playlist.setSongs(musicPlaylist);
-
+            playlistRepository.save(playlist);
         }
         return playlist;
     }
