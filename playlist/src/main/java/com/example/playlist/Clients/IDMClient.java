@@ -6,12 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import com.spotify.idmclient.wsdl.*;
 import javax.xml.namespace.QName;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Collections.list;
 
 
 public class IDMClient extends WebServiceGatewaySupport {
