@@ -1,0 +1,6 @@
+# IntelliJ IDEA specific
+.idea/
+*.iml
+
+# Maven / Gradle build outputs
+target/
