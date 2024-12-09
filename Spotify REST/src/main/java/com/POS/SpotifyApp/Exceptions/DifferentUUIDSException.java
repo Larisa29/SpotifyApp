@@ -1,4 +1,4 @@
-package com.POS.SpotifyApp.DataAccess.Exceptions;
+package com.POS.SpotifyApp.Exceptions;
 
 public class DifferentUUIDSException extends RuntimeException{
     public DifferentUUIDSException()

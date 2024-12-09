@@ -2,8 +2,6 @@ package com.example.playlist.View;
 
 import com.example.playlist.DataAccess.Models.Playlist;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.data.annotation.Id;
 
 import java.util.*;
 

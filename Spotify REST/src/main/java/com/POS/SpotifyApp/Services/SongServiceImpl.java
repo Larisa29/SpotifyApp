@@ -1,7 +1,7 @@
 package com.POS.SpotifyApp.Services;
 
-import com.POS.SpotifyApp.DataAccess.Exceptions.SongDbIsEmptyException;
-import com.POS.SpotifyApp.DataAccess.Exceptions.SongNotFoundException;
+import com.POS.SpotifyApp.Exceptions.SongDbIsEmptyException;
+import com.POS.SpotifyApp.Exceptions.SongNotFoundException;
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
 import com.POS.SpotifyApp.DataAccess.Models.SongSpecifications;
@@ -101,6 +101,24 @@ public class SongServiceImpl implements ISongService{
     {
         Song savedSong = songRepository.save(songRequest);
         return savedSong;
+    }
+
+    @Override
+    public Song updateSong(Song songRequest)
+    {
+        Song song = songRepository.getSongById(songRequest.getId());
+        if (song ==null)
+        {
+            throw new SongNotFoundException(songRequest.getId());
+        }
+
+        song.setType(songRequest.getType());
+        song.setName(songRequest.getName());
+        song.setGenre(songRequest.getGenre());
+        song.setParent(songRequest.getParent());
+        song.setYear(songRequest.getYear());
+
+        return songRepository.save(song);
     }
 
     @Override

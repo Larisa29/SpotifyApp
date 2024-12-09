@@ -1,10 +1,10 @@
 package com.POS.SpotifyApp.Services;
 
-import com.POS.SpotifyApp.DataAccess.Exceptions.*;
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
 import com.POS.SpotifyApp.DataAccess.Repositories.IArtistRepository;
 import com.POS.SpotifyApp.DataAccess.Repositories.ISongRepository;
+import com.POS.SpotifyApp.Exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

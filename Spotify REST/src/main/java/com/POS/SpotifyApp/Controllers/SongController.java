@@ -1,7 +1,7 @@
 package com.POS.SpotifyApp.Controllers;
 
-import com.POS.SpotifyApp.DataAccess.Exceptions.SongDbIsEmptyException;
-import com.POS.SpotifyApp.DataAccess.Exceptions.SongNotFoundException;
+import com.POS.SpotifyApp.Exceptions.SongDbIsEmptyException;
+import com.POS.SpotifyApp.Exceptions.SongNotFoundException;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
 import com.POS.SpotifyApp.DataAccess.Models.Song.Types;
 import com.POS.SpotifyApp.DataAccess.Models.Song.Genre;
@@ -87,5 +87,19 @@ public class SongController{
         }
     }
 
-    /* TO DO: CONTROLLER FOR UPDATE SONG*/
+    @PutMapping("/songs/{id}")
+    ResponseEntity<?> updateSong(@RequestBody Song song, @PathVariable Integer id)
+    {
+        try{
+            song.setId(id);
+            Song updatedSong = songService.updateSong(song);
+
+            return ResponseEntity.ok(updatedSong);
+        }
+        catch (SongNotFoundException ex)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+
+    }
 }

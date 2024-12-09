@@ -1,4 +1,4 @@
-package com.POS.SpotifyApp.DataAccess.Exceptions;
+package com.POS.SpotifyApp.Exceptions;
 
 public class ArtistNotFoundException extends RuntimeException {
     public ArtistNotFoundException(String id)

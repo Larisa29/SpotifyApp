@@ -14,5 +14,5 @@ public interface ISongService{
      Song getSong(Integer id);
      EntityModel<Song> convertSongToEntityModel(Song song);
      void deleteSongAlbum(int id);
-
+     Song updateSong(Song songRequest);
 }

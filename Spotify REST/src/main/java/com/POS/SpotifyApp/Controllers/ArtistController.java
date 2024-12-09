@@ -1,9 +1,9 @@
 package com.POS.SpotifyApp.Controllers;
 
 import com.POS.SpotifyApp.Assemblers.ArtistModelAssembler;
-import com.POS.SpotifyApp.DataAccess.Exceptions.*;
 import com.POS.SpotifyApp.DataAccess.Models.Artist;
 import com.POS.SpotifyApp.DataAccess.Models.Song;
+import com.POS.SpotifyApp.Exceptions.*;
 import com.POS.SpotifyApp.Services.IArtistService;
 import com.POS.SpotifyApp.Services.ISongService;
 import org.springframework.beans.factory.annotation.Autowired;
